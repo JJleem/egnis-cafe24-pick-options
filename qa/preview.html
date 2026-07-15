@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>골라담기 카드 미리보기 (시안 매칭 확인용)</title>
   <link rel="stylesheet" href="../css/pick-options.css" />
+  <script src="../js/pick-options.config.js"></script>
   <style>
     body { margin: 0; padding: 24px; background: #f4f4f4; font-family: 'Pretendard', -apple-system, sans-serif; }
     .wrap { max-width: 420px; margin: 0 auto; }
@@ -14,9 +15,8 @@
 </head>
 <body>
   <div class="note">
-    이 파일은 <b>시안 매칭 확인용 로컬 미리보기</b>입니다. 실제 카페24 배포본이 아니라,
-    <code>css/pick-options.css</code>를 그대로 불러와 <code>createCard()</code>가 생성하는 카드 마크업을 렌더합니다.
-    피그마 시안과 나란히 비교해 보세요.
+    <b>시안 매칭 확인용 로컬 미리보기</b> — 실제 <code>css/pick-options.css</code>와 <code>js/pick-options.config.js</code>를
+    그대로 불러와 <code>createCard()</code>와 동일한 마크업으로 카드를 렌더합니다. config 값을 바꾸면 여기도 자동 반영됩니다.
   </div>
 
   <div class="wrap">
@@ -25,101 +25,45 @@
       <div class="pick-options__header">
         <h3>옵션 선택 <span class="req">(필수)</span></h3>
       </div>
-      <div class="pick-options__list">
-        <button type="button" class="pick-options__card" aria-pressed="false">
-          <span class="pick-options__lead">
-            <span class="pick-options__check" aria-hidden="true"></span>
-            <span class="pick-options__label">
-              <strong class="pick-options__name">10개입</strong>
-              <span class="pick-options__count"></span>
-            </span>
-          </span>
-          <span class="pick-options__info">
-            <span class="pick-options__price-line">
-              <strong class="pick-options__price">10,000원</strong>
-              <span class="pick-options__discount"></span>
-            </span>
-            <span class="pick-options__perunit">1개 : 1,000원</span>
-          </span>
-        </button>
-
-        <button type="button" class="pick-options__card" aria-pressed="false">
-          <span class="pick-options__lead">
-            <span class="pick-options__check" aria-hidden="true"></span>
-            <span class="pick-options__label">
-              <strong class="pick-options__name">30개입</strong>
-              <span class="pick-options__count"></span>
-            </span>
-          </span>
-          <span class="pick-options__info">
-            <span class="pick-options__price-line">
-              <strong class="pick-options__price">20,000원</strong>
-              <span class="pick-options__discount"></span>
-              <span class="pick-options__badge pick-options__badge--accent">가장 많이 사요</span>
-            </span>
-            <span class="pick-options__perunit">1개 : 667원</span>
-          </span>
-        </button>
-
-        <button type="button" class="pick-options__card" aria-pressed="false">
-          <span class="pick-options__lead">
-            <span class="pick-options__check" aria-hidden="true"></span>
-            <span class="pick-options__label">
-              <strong class="pick-options__name">50개입</strong>
-              <span class="pick-options__count"></span>
-            </span>
-          </span>
-          <span class="pick-options__info">
-            <span class="pick-options__price-line">
-              <strong class="pick-options__price">30,000원</strong>
-              <span class="pick-options__discount"></span>
-            </span>
-            <span class="pick-options__perunit">1개 : 600원</span>
-          </span>
-        </button>
-
-        <button type="button" class="pick-options__card" aria-pressed="false">
-          <span class="pick-options__lead">
-            <span class="pick-options__check" aria-hidden="true"></span>
-            <span class="pick-options__label">
-              <strong class="pick-options__name">100개입</strong>
-              <span class="pick-options__count"></span>
-            </span>
-          </span>
-          <span class="pick-options__info">
-            <span class="pick-options__price-line">
-              <strong class="pick-options__price">50,000원</strong>
-              <span class="pick-options__discount"></span>
-              <span class="pick-options__badge pick-options__badge--max">최대할인</span>
-            </span>
-            <span class="pick-options__perunit">1개 : 500원</span>
-          </span>
-        </button>
-      </div>
+      <div class="pick-options__list" id="listDefault"></div>
     </section>
 
-    <h2>선택된 상태 (30개입 1회 담김)</h2>
+    <h2>선택된 상태 (첫 카드 1회 담김)</h2>
     <section class="pick-options is-ready">
-      <div class="pick-options__list">
-        <button type="button" class="pick-options__card is-selected" aria-pressed="true">
-          <span class="pick-options__lead">
-            <span class="pick-options__check" aria-hidden="true"></span>
-            <span class="pick-options__label">
-              <strong class="pick-options__name">30개입</strong>
-              <span class="pick-options__count">1 / 2</span>
-            </span>
-          </span>
-          <span class="pick-options__info">
-            <span class="pick-options__price-line">
-              <strong class="pick-options__price">20,000원</strong>
-              <span class="pick-options__discount"></span>
-              <span class="pick-options__badge pick-options__badge--accent">가장 많이 사요</span>
-            </span>
-            <span class="pick-options__perunit">1개 : 667원</span>
-          </span>
-        </button>
-      </div>
+      <div class="pick-options__list" id="listSelected"></div>
     </section>
   </div>
+
+  <script>
+    var cfg = window.PICK_OPTION_CONFIG.groups;
+    var names = Object.keys(cfg).sort(function (a, b) { return (cfg[a].order || 99) - (cfg[b].order || 99); });
+
+    function cardHTML(name, g, opts) {
+      opts = opts || {};
+      var badgeType = g.badgeType === 'max' ? 'max' : 'accent';
+      var badge = g.badge ? '<span class="pick-options__badge pick-options__badge--' + badgeType + '">' + g.badge + '</span>' : '';
+      return '' +
+        '<button type="button" class="pick-options__card ' + (opts.selected ? 'is-selected' : '') + '" aria-pressed="' + (opts.selected ? 'true' : 'false') + '">' +
+          '<span class="pick-options__lead">' +
+            '<span class="pick-options__check" aria-hidden="true"></span>' +
+            '<span class="pick-options__label"><strong class="pick-options__name">' + name + '</strong>' +
+              '<span class="pick-options__count">' + (opts.count || '') + '</span></span>' +
+          '</span>' +
+          '<span class="pick-options__info">' +
+            '<span class="pick-options__price-line">' +
+              '<strong class="pick-options__price">' + (g.price || '') + '</strong>' +
+              '<span class="pick-options__discount">' + (g.discount || '') + '</span>' + badge +
+            '</span>' +
+            '<span class="pick-options__perunit">' + (g.perUnit || '') + '</span>' +
+          '</span>' +
+        '</button>';
+    }
+
+    document.getElementById('listDefault').innerHTML =
+      names.map(function (n) { return cardHTML(n, cfg[n]); }).join('');
+
+    document.getElementById('listSelected').innerHTML =
+      cardHTML(names[0], cfg[names[0]], { selected: true, count: '1 / 2' });
+  </script>
 </body>
 </html>

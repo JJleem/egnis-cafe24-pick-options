@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>골라담기 모바일 바텀시트 미리보기</title>
   <link rel="stylesheet" href="../css/pick-options.css" />
+  <script src="../js/pick-options.config.js"></script>
   <style>
     body { margin: 0; background: #f4f4f4; font-family: 'Pretendard', -apple-system, sans-serif; }
     .mock { padding: 16px; max-width: 480px; margin: 0 auto; }
@@ -50,53 +51,30 @@
       <button type="button" class="pick-options__close" aria-label="옵션 선택 닫기">&times;</button>
     </div>
 
-    <div class="pick-options__list">
-      <button type="button" class="pick-options__card" aria-pressed="false">
-        <span class="pick-options__lead">
-          <span class="pick-options__check" aria-hidden="true"></span>
-          <span class="pick-options__label"><strong class="pick-options__name">10개입</strong><span class="pick-options__count"></span></span>
-        </span>
-        <span class="pick-options__info">
-          <span class="pick-options__price-line"><strong class="pick-options__price">10,000원</strong><span class="pick-options__discount"></span></span>
-          <span class="pick-options__perunit">1개 : 1,000원</span>
-        </span>
-      </button>
-      <button type="button" class="pick-options__card is-selected" aria-pressed="true">
-        <span class="pick-options__lead">
-          <span class="pick-options__check" aria-hidden="true"></span>
-          <span class="pick-options__label"><strong class="pick-options__name">30개입</strong><span class="pick-options__count">1 / 2</span></span>
-        </span>
-        <span class="pick-options__info">
-          <span class="pick-options__price-line"><strong class="pick-options__price">20,000원</strong><span class="pick-options__discount"></span><span class="pick-options__badge pick-options__badge--accent">가장 많이 사요</span></span>
-          <span class="pick-options__perunit">1개 : 667원</span>
-        </span>
-      </button>
-      <button type="button" class="pick-options__card" aria-pressed="false">
-        <span class="pick-options__lead">
-          <span class="pick-options__check" aria-hidden="true"></span>
-          <span class="pick-options__label"><strong class="pick-options__name">50개입</strong><span class="pick-options__count"></span></span>
-        </span>
-        <span class="pick-options__info">
-          <span class="pick-options__price-line"><strong class="pick-options__price">30,000원</strong><span class="pick-options__discount"></span></span>
-          <span class="pick-options__perunit">1개 : 600원</span>
-        </span>
-      </button>
-      <button type="button" class="pick-options__card" aria-pressed="false">
-        <span class="pick-options__lead">
-          <span class="pick-options__check" aria-hidden="true"></span>
-          <span class="pick-options__label"><strong class="pick-options__name">100개입</strong><span class="pick-options__count"></span></span>
-        </span>
-        <span class="pick-options__info">
-          <span class="pick-options__price-line"><strong class="pick-options__price">50,000원</strong><span class="pick-options__discount"></span><span class="pick-options__badge pick-options__badge--max">최대할인</span></span>
-          <span class="pick-options__perunit">1개 : 500원</span>
-        </span>
-      </button>
-    </div>
+    <div class="pick-options__list" id="sheetList"></div>
 
     <button type="button" class="pick-options__done">선택 완료</button>
   </section>
 
   <script>
+    // config 에서 카드 렌더(실제 createCard 와 동일 마크업). 둘째 카드는 선택 상태 데모.
+    var cfg = window.PICK_OPTION_CONFIG.groups;
+    var names = Object.keys(cfg).sort(function (a, b) { return (cfg[a].order || 99) - (cfg[b].order || 99); });
+    function cardHTML(name, g, opts) {
+      opts = opts || {};
+      var badgeType = g.badgeType === 'max' ? 'max' : 'accent';
+      var badge = g.badge ? '<span class="pick-options__badge pick-options__badge--' + badgeType + '">' + g.badge + '</span>' : '';
+      return '<button type="button" class="pick-options__card ' + (opts.selected ? 'is-selected' : '') + '" aria-pressed="' + (opts.selected ? 'true' : 'false') + '">' +
+        '<span class="pick-options__lead"><span class="pick-options__check" aria-hidden="true"></span>' +
+        '<span class="pick-options__label"><strong class="pick-options__name">' + name + '</strong><span class="pick-options__count">' + (opts.count || '') + '</span></span></span>' +
+        '<span class="pick-options__info"><span class="pick-options__price-line"><strong class="pick-options__price">' + (g.price || '') + '</strong>' +
+        '<span class="pick-options__discount">' + (g.discount || '') + '</span>' + badge + '</span>' +
+        '<span class="pick-options__perunit">' + (g.perUnit || '') + '</span></span></button>';
+    }
+    document.getElementById('sheetList').innerHTML = names.map(function (n, i) {
+      return cardHTML(n, cfg[n], i === 1 ? { selected: true, count: '1 / 2' } : {});
+    }).join('');
+
     // 미리보기 전용: 실제 pick-options.js 의 openSheet/closeSheet 동작을 흉내낸다.
     var root = document.getElementById('pickOptions');
     var backdrop = document.querySelector('.pick-options__backdrop');
