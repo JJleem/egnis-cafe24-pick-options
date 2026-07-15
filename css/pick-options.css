@@ -286,24 +286,34 @@
    - 터치 영역과 구매 버튼이 겹치지 않도록 백드롭 + 고정 시트로 분리
    ============================================================ */
 
-/* ----- 트리거 버튼 (페이지 흐름에 노출) ----- */
+/* ----- 트리거 버튼 (화면 하단 고정 바) -----
+   #pickOptions 바깥(형제)에 삽입되므로 .pick-options 의 --pick-* 커스텀
+   프로퍼티가 상속되지 않는다. 그래서 색상은 리터럴값으로 지정한다.
+   position:fixed 로 하단에 고정해 스크롤 위치와 무관하게 항상 노출한다. */
 body.pick-mobile .pick-options__trigger {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 6px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9997;
   width: 100%;
-  min-height: 48px;
-  margin: 12px 0;
-  padding: 0 16px;
+  min-height: 56px;
+  margin: 0;
+  padding: 8px 16px;
+  padding-bottom: calc(8px + env(safe-area-inset-bottom));
   font-family: inherit;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.03em;
   color: #ffffff;
-  background: var(--pick-accent);
+  background: #ff692e;
   border: 0;
-  border-radius: 8px;
+  border-radius: 0;
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
   cursor: pointer;
 }
 
