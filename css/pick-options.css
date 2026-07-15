@@ -74,13 +74,15 @@
   overflow: hidden;
 }
 
-/* ---------- 행(옵션 한 줄) ---------- */
+/* ---------- 행(옵션 한 줄) ----------
+   시안 규격: 행 padding 12px, 하단 구분선 1px, 좌측 블록(라디오+이름) 고정 88px,
+   좌우 블록 사이 gap 24px. */
 .pick-options__card {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 24px;
   width: 100%;
-  padding: 14px 16px;
+  padding: 12px 16px;
   text-align: left;
   background: var(--pick-surface);
   border: 0;
@@ -89,6 +91,15 @@
   appearance: none;
   -webkit-appearance: none;
   transition: background-color 0.15s ease;
+}
+
+/* 좌측 블록: 라디오(체크) + 이름 (시안 88px 고정폭, 내부 gap 10px) */
+.pick-options__lead {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 88px;
 }
 
 .pick-options__card:last-child {
@@ -136,11 +147,9 @@
 
 /* ---------- 이름 + 카운트 ---------- */
 .pick-options__label {
-  flex: 0 0 auto;
   display: flex;
   align-items: center;
-  gap: 8px;
-  min-width: 84px;
+  gap: 6px;
 }
 
 .pick-options__name {
@@ -188,9 +197,10 @@
 }
 
 .pick-options__price {
-  font-size: 15px;
+  font-family: 'SUIT Variable', 'SUIT', var(--pick-font, inherit);
+  font-size: 14px;
   font-weight: 800;
-  line-height: 1.3;
+  line-height: 20px;
   color: var(--pick-text);
   white-space: nowrap;
   font-variant-numeric: tabular-nums;
@@ -224,11 +234,11 @@
   display: inline-flex;
   align-items: center;
   height: 20px;
-  padding: 0 5px;
+  padding: 0 4px;
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
-  border-radius: 3px;
+  border-radius: 2px;
   white-space: nowrap;
 }
 
