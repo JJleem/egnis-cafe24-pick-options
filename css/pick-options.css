@@ -44,16 +44,22 @@
 }
 
 /* ---------- 헤더 ---------- */
+/* 시안: "옵션 선택 (필수)" 14px Medium #525252 라벨 */
 .pick-options__header {
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .pick-options__header h3 {
-  margin: 0 0 4px;
-  font-size: 18px;
-  font-weight: 600;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
   line-height: 1.4;
-  color: var(--pick-text);
+  color: #525252;
+  letter-spacing: -0.03em;
+}
+
+.pick-options__header h3 .req {
+  color: var(--pick-accent);
 }
 
 .pick-options__header p {

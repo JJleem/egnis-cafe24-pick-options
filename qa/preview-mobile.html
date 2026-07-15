@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>골라담기 모바일 바텀시트 미리보기</title>
+  <link rel="stylesheet" href="../css/pick-options.css" />
+  <style>
+    body { margin: 0; background: #f4f4f4; font-family: 'Pretendard', -apple-system, sans-serif; }
+    .mock { padding: 16px; max-width: 480px; margin: 0 auto; }
+    .mock h1 { font-size: 18px; margin: 8px 0; }
+    .mock .img { height: 220px; background: #e5e5e5; border-radius: 8px; margin-bottom: 12px; }
+    .mock .line { height: 12px; background: #ececec; border-radius: 4px; margin: 8px 0; }
+    .mock .line.short { width: 40%; }
+    .hint { max-width: 480px; margin: 0 auto; padding: 12px 16px; font-size: 12px; color: #777; line-height: 1.6; }
+    /* 시트가 항상 하단 바 위로 뜨도록: preview 이므로 body.pick-mobile 고정 */
+  </style>
+</head>
+<body class="pick-mobile">
+  <p class="hint">
+    <b>모바일 바텀시트 미리보기</b> — 하단 주황 바("구성 골라담기")를 탭하면 시트가 올라옵니다.
+    백드롭(검정 오버레이) 위에서 <b>카드 클릭이 정상 동작</b>하는지(선택 토글) 확인하세요.
+    닫기: ×, 백드롭 탭, 또는 "선택 완료".
+  </p>
+
+  <div class="mock">
+    <div class="img"></div>
+    <h1>골라담기 옵션 테스트 상품</h1>
+    <div class="line"></div>
+    <div class="line short"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line short"></div>
+  </div>
+
+  <!-- 하단 고정 트리거 바 -->
+  <button type="button" id="pickOptionsTrigger" class="pick-options__trigger">
+    <span class="pick-options__trigger-label">구성 골라담기</span>
+    <span class="pick-options__trigger-count">2개 담김</span>
+  </button>
+
+  <!-- 백드롭 -->
+  <div class="pick-options__backdrop"></div>
+
+  <!-- 바텀시트 -->
+  <section id="pickOptions" class="pick-options is-ready">
+    <span class="pick-options__handle" aria-hidden="true"></span>
+    <div class="pick-options__header">
+      <h3>옵션 선택 <span class="req">(필수)</span></h3>
+      <button type="button" class="pick-options__close" aria-label="옵션 선택 닫기">&times;</button>
+    </div>
+
+    <div class="pick-options__list">
+      <button type="button" class="pick-options__card" aria-pressed="false">
+        <span class="pick-options__lead">
+          <span class="pick-options__check" aria-hidden="true"></span>
+          <span class="pick-options__label"><strong class="pick-options__name">10개입</strong><span class="pick-options__count"></span></span>
+        </span>
+        <span class="pick-options__info">
+          <span class="pick-options__price-line"><strong class="pick-options__price">10,000원</strong><span class="pick-options__discount"></span></span>
+          <span class="pick-options__perunit">1개 : 1,000원</span>
+        </span>
+      </button>
+      <button type="button" class="pick-options__card is-selected" aria-pressed="true">
+        <span class="pick-options__lead">
+          <span class="pick-options__check" aria-hidden="true"></span>
+          <span class="pick-options__label"><strong class="pick-options__name">30개입</strong><span class="pick-options__count">1 / 2</span></span>
+        </span>
+        <span class="pick-options__info">
+          <span class="pick-options__price-line"><strong class="pick-options__price">20,000원</strong><span class="pick-options__discount"></span><span class="pick-options__badge pick-options__badge--accent">가장 많이 사요</span></span>
+          <span class="pick-options__perunit">1개 : 667원</span>
+        </span>
+      </button>
+      <button type="button" class="pick-options__card" aria-pressed="false">
+        <span class="pick-options__lead">
+          <span class="pick-options__check" aria-hidden="true"></span>
+          <span class="pick-options__label"><strong class="pick-options__name">50개입</strong><span class="pick-options__count"></span></span>
+        </span>
+        <span class="pick-options__info">
+          <span class="pick-options__price-line"><strong class="pick-options__price">30,000원</strong><span class="pick-options__discount"></span></span>
+          <span class="pick-options__perunit">1개 : 600원</span>
+        </span>
+      </button>
+      <button type="button" class="pick-options__card" aria-pressed="false">
+        <span class="pick-options__lead">
+          <span class="pick-options__check" aria-hidden="true"></span>
+          <span class="pick-options__label"><strong class="pick-options__name">100개입</strong><span class="pick-options__count"></span></span>
+        </span>
+        <span class="pick-options__info">
+          <span class="pick-options__price-line"><strong class="pick-options__price">50,000원</strong><span class="pick-options__discount"></span><span class="pick-options__badge pick-options__badge--max">최대할인</span></span>
+          <span class="pick-options__perunit">1개 : 500원</span>
+        </span>
+      </button>
+    </div>
+
+    <button type="button" class="pick-options__done">선택 완료</button>
+  </section>
+
+  <script>
+    // 미리보기 전용: 실제 pick-options.js 의 openSheet/closeSheet 동작을 흉내낸다.
+    var root = document.getElementById('pickOptions');
+    var backdrop = document.querySelector('.pick-options__backdrop');
+    function openSheet() { root.classList.add('is-open'); backdrop.classList.add('is-open'); document.body.classList.add('pick-sheet-locked'); }
+    function closeSheet() { root.classList.remove('is-open'); backdrop.classList.remove('is-open'); document.body.classList.remove('pick-sheet-locked'); }
+    document.getElementById('pickOptionsTrigger').addEventListener('click', openSheet);
+    backdrop.addEventListener('click', closeSheet);
+    document.querySelector('.pick-options__close').addEventListener('click', closeSheet);
+    document.querySelector('.pick-options__done').addEventListener('click', closeSheet);
+    // 카드 클릭이 백드롭 위에서 동작하는지 데모(선택 토글)
+    root.querySelectorAll('.pick-options__card').forEach(function (c) {
+      c.addEventListener('click', function () {
+        var on = c.classList.toggle('is-selected');
+        c.setAttribute('aria-pressed', on ? 'true' : 'false');
+      });
+    });
+  </script>
+</body>
+</html>
